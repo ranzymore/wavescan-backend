@@ -9,7 +9,7 @@ app.use(morgan("dev"));
 app.use(cors({ origin: ["*"], credentials: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/hello", (req, res) => {
   res.json({ message: "Hello, from wavescan!" });
 });
 
