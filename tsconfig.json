@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types", "./node_modules/.prisma/client"],
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["api/src/**/*.ts", "prisma/**/*.ts"],
+  "exclude": ["node_modules"]
+}
