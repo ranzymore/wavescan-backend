@@ -9,6 +9,10 @@ app.use(morgan("dev"));
 app.use(cors({ origin: ["*"], credentials: true }));
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ message: "Hello, from wavescan!" });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 
