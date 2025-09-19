@@ -32,17 +32,13 @@ app.get("/protected", authMiddleware, (req, res) => {
 });
 
 const openApiSpec = generateOpenApiSpec();
-// ✅ JSON spec
-app.get("/api/docs.json", (req, res) => {
-  res.json(openApiSpec);
-});
+const isProd = process.env.NODE_ENV === "production";
 
-// ✅ Swagger UI (important: pass the spec directly, not only url)
 app.use(
   "/api/docs",
   swaggerUi.serve,
-  swaggerUi.setup(openApiSpec, {
-    explorer: true, // optional, adds search bar
+  swaggerUi.setup(isProd ? undefined : openApiSpec, {
+    swaggerOptions: isProd ? { url: "/api/docs.json" } : undefined,
   })
 );
 
