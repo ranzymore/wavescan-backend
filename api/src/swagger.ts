@@ -14,5 +14,13 @@ export function generateOpenApiSpec() {
       title: "User API",
       version: "1.0.0",
     },
+    servers: [
+      {
+        url:
+          process.env.NODE_ENV === "production"
+            ? "https://wavescan-backend.vercel.app/api"
+            : "http://localhost:3000/api",
+      },
+    ],
   });
 }

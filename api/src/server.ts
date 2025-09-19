@@ -32,6 +32,19 @@ app.get("/protected", authMiddleware, (req, res) => {
 });
 
 const openApiSpec = generateOpenApiSpec();
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+app.get("/api/docs.json", (req, res) => {
+  res.json(openApiSpec);
+});
+
+// ✅ Serve Swagger UI
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/api/docs.json", // very important!
+    },
+  })
+);
 
 export default app;
