@@ -4,7 +4,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth.js";
 import { authMiddleware } from "./middleware/auth-middleware.js";
 import swaggerUi from "swagger-ui-express";
-import { openApiSpec } from "./swagger.js";
+import { generateOpenApiSpec } from "./swagger.js";
 
 const app = express();
 app.use(morgan("dev"));
@@ -31,6 +31,7 @@ app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "Hello, Tenant!" });
 });
 
+const openApiSpec = generateOpenApiSpec();
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 export default app;

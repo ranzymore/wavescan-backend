@@ -48,7 +48,7 @@ export const MembershipResponseSchema = z.object({
 // Register endpoint
 registry.registerPath({
   method: "post",
-  path: "/auth/register",
+  path: "/api/auth/register",
   description: "Register a new user and store",
   summary: "Register",
   request: {
@@ -87,7 +87,7 @@ registry.registerPath({
 // Login endpoint
 registry.registerPath({
   method: "post",
-  path: "/auth/login",
+  path: "/api/auth/login",
   description: "Login with email and password",
   summary: "Login",
   request: {
