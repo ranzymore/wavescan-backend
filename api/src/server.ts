@@ -32,18 +32,17 @@ app.get("/protected", authMiddleware, (req, res) => {
 });
 
 const openApiSpec = generateOpenApiSpec();
+// ✅ JSON spec
 app.get("/api/docs.json", (req, res) => {
   res.json(openApiSpec);
 });
 
-// ✅ Serve Swagger UI
+// ✅ Swagger UI (important: pass the spec directly, not only url)
 app.use(
   "/api/docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, {
-    swaggerOptions: {
-      url: "/api/docs.json", // very important!
-    },
+  swaggerUi.setup(openApiSpec, {
+    explorer: true, // optional, adds search bar
   })
 );
 
