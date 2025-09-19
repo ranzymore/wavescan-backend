@@ -33,6 +33,9 @@ app.get("/protected", authMiddleware, (req, res) => {
 
 const openApiSpec = generateOpenApiSpec();
 const isProd = process.env.NODE_ENV === "production";
+app.get("/api/docs.json", (req, res) => {
+  res.json(openApiSpec);
+});
 
 app.use(
   "/api/docs",
