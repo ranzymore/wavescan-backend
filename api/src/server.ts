@@ -16,9 +16,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: (origin, callback) => {
-      callback(null, origin || "*"); // allow all origins dynamically
-    },
+    origin: "*",
     credentials: true,
   })
 );
