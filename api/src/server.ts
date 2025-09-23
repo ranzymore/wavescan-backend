@@ -36,7 +36,7 @@ app.use("/api/auth", authRoutes);
 // app.use("/api/stores", storeRoutes);
 // app.use("/api/memberships", membershipRoutes);
 app.use("/api/store/:storeId/categories", categoryRoutes);
-app.use("/stores/:storeId/products", productRoutes);
+app.use("/api/stores/:storeId/products", productRoutes);
 
 // Example protected route
 app.get("/protected", authMiddleware, (req, res) => {

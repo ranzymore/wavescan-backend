@@ -81,6 +81,7 @@ router.post("/login", async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
+        stores: { select: { id: true } },
         members: { select: { role: true } },
       },
     });
@@ -97,6 +98,8 @@ router.post("/login", async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      storeId: user.stores?.[0].id,
+      role: user.members?.[0].role,
       createdAt: user.createdAt,
     };
 
