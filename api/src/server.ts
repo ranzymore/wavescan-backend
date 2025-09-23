@@ -16,9 +16,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: (origin, callback) => {
-      callback(null, origin || "*"); // allow all origins dynamically
-    },
+    origin: "*",
     credentials: true,
   })
 );
@@ -35,8 +33,8 @@ app.get("/api/hello", (req, res) => {
 app.use("/api/auth", authRoutes);
 // app.use("/api/stores", storeRoutes);
 // app.use("/api/memberships", membershipRoutes);
-app.use("/api/store/:storeId/categories", authMiddleware, categoryRoutes);
-app.use("/api/stores/:storeId/products", authMiddleware, productRoutes);
+app.use("/api/store/:storeId/category", authMiddleware, categoryRoutes);
+app.use("/api/store/:storeId/products", authMiddleware, productRoutes);
 
 // Example protected route
 app.get("/protected", authMiddleware, (req, res) => {
