@@ -20,48 +20,48 @@ router.post("/register", async (req, res) => {
     if (existing)
       return res.status(400).json({ error: "Email already registered" });
 
-    const hashed = await hashPassword(password);
+    const hashedPassword = await hashPassword(password);
 
-    const result = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
+    // Use transaction for atomic operations
+    const [user, store] = await prisma.$transaction(async (tx) => {
+      // Step 1: create user
+      const createdUser = await tx.user.create({
         data: {
           email,
-          password: hashed,
+          password: hashedPassword,
           firstName,
           lastName,
         },
       });
 
-      const store = await tx.store.create({
+      // Step 2: create store + membership
+      const createdStore = await tx.store.create({
         data: {
           name: storeName,
+          userId: createdUser.id,
+          memberships: {
+            create: {
+              role: "owner",
+              status: "active",
+              userId: createdUser.id,
+            },
+          },
+        },
+        include: {
+          memberships: true,
         },
       });
 
-      const membership = await tx.membership.create({
-        data: {
-          role: "OWNER",
-          userId: user.id,
-          storeId: store.id,
-        },
-      });
-
-      return { user, store, membership };
+      return [createdUser, createdStore];
     });
 
-    const safeUser = {
-      id: result.user.id,
-      email: result.user.email,
-      firstName: result.user.firstName,
-      lastName: result.user.lastName,
-      createdAt: result.user.createdAt,
-    };
+    // Remove password before sending response
+    const { password: _, ...safeUser } = user;
 
     return res.status(201).json({
       message: "Registration successful",
       user: safeUser,
-      store: result.store,
-      membership: { id: result.membership.id, role: result.membership.role },
+      store,
     });
   } catch (err: any) {
     console.error("register error:", err);
@@ -81,7 +81,8 @@ router.post("/login", async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
-        memberships: { include: { store: true } },
+        stores: { select: { id: true } },
+        members: { select: { role: true } },
       },
     });
 
@@ -97,20 +98,15 @@ router.post("/login", async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      storeId: user.stores?.[0].id,
+      role: user.members?.[0].role,
       createdAt: user.createdAt,
     };
-
-    const stores = user.memberships.map((m) => ({
-      membershipId: m.id,
-      role: m.role,
-      store: { id: m.store.id, name: m.store.name },
-    }));
 
     return res.json({
       message: "Login successful",
       token,
       user: safeUser,
-      stores,
     });
   } catch (err) {
     console.error("login error:", err);

@@ -1,45 +1,86 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
+  // provider = "sqlite"
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String @id @default(cuid())
+  email     String @unique
   password  String
   firstName String
   lastName  String
 
-  memberships Membership[]
+  stores  Store[]
+  members Membership[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([email])
 }
 
 model Store {
-  id        String   @id @default(cuid())
-  name      String
-  memberships Membership[]
+  id     String @id @default(cuid())
+  name   String
+  userId String
+  status String @default("active")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  memberships Membership[]
+  categories  Category[]
+  products    Product[]
+  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([name, userId])
 }
 
 model Membership {
-  id        String   @id @default(cuid())
-  role      String   // OWNER, STAFF
-  userId    String
-  storeId   String
-  user      User     @relation(fields: [userId], references: [id])
-  store     Store    @relation(fields: [storeId], references: [id])
+  id      String @id @default(cuid())
+  role    String // OWNER, STAFF
+  storeId String
+  userId  String
+  status  String @default("active")
+
+  store Store @relation(fields: [storeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([userId, storeId])
+  @@index([userId, storeId])
+}
+
+model Category {
+  id      String @id @default(cuid())
+  name    String
+  storeId String
+  status  String @default("active")
+
+  products   Product[]
+  store     Store      @relation(fields: [storeId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([name, storeId])
+}
+
+model Product {
+  id         String  @id @default(cuid())
+  categoryId String?
+  storeId    String
+  name       String
+  price      Float
+  status     String  @default("active")
+
+  category  Category? @relation(fields: [categoryId], references: [id])
+  store     Store     @relation(fields: [storeId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([name, storeId])
+  @@index([createdAt])
 }
