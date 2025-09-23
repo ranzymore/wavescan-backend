@@ -9,12 +9,9 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@adminjs/express": "^6.1.1",
-    "@adminjs/prisma": "^5.0.4",
     "@asteasolutions/zod-to-openapi": "^8.1.0",
     "@prisma/client": "^6.16.2",
     "@vercel/node": "^5.3.22",
-    "adminjs": "^7.8.17",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
