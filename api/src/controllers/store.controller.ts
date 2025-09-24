@@ -1,9 +1,20 @@
 import { Request, Response } from "express";
 import * as storeService from "../services/store.service.js";
+import { prisma } from "../utils/db.js";
 
 export async function createStore(req: Request, res: Response) {
   try {
     const { name } = req.body;
+
+    const existingStore = await prisma.store.findUnique({
+      where: { name_userId: { name, userId: req.userId as string } },
+    });
+
+    if (existingStore)
+      return res
+        .status(403)
+        .json({ message: "Store with same name already exist" });
+
     const store = await storeService.createStore(req.userId!, name);
     res.status(201).json(store);
   } catch (err: any) {

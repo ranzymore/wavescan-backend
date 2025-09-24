@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import z from "zod";
 
-const storeIdSchema = z.string().cuid(); // ensure it’s a valid cuid
+const storeIdSchema = z.cuid(); // ensure it’s a valid cuid
 
 export function storeIdMiddleware(
   req: Request,
