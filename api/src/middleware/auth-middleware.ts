@@ -21,6 +21,7 @@ export function authMiddleware(
     const decoded = verifyToken(token);
     if (!decoded?.userId)
       return res.status(401).json({ error: "Invalid token payload" });
+    console.log(decoded, "decode");
 
     req.userId = decoded.userId;
     return next();

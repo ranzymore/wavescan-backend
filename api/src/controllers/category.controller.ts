@@ -11,7 +11,7 @@ const categorySchema = z.object({
 // Create Category
 export const createCategory = async (req: Request, res: Response) => {
   try {
-    const storeId = req.params.storeId;
+    const storeId = req.storeId as string;
     const parsed = categorySchema.safeParse(req.body);
     if (!parsed.success) {
       return res
@@ -21,13 +21,8 @@ export const createCategory = async (req: Request, res: Response) => {
 
     const { name, products } = parsed.data;
 
-    // Ensure user is a member of this store
-    const member = await prisma.membership.findUnique({
-      where: { userId_storeId: { userId: req.userId!, storeId } },
-    });
-    if (!member) {
-      return res.status(403).json({ message: "Not authorized for this store" });
-    }
+    console.log(req.userId, "userId");
+    console.log(storeId, "storeId");
 
     const existingCategory = await prisma.category.findUnique({
       where: { name_storeId: { name, storeId } },
