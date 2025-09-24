@@ -6,8 +6,12 @@ import {
   updateCategory,
   deleteCategory,
 } from "../controllers/category.controller.js";
+import { membershipMiddleware } from "../middleware/membership.middleware.js";
+import { storeIdMiddleware } from "../middleware/store-id.middleware.js";
 
-const router = Router();
+const router = Router({ mergeParams: true });
+
+router.use(storeIdMiddleware, membershipMiddleware);
 
 router.post("/", createCategory);
 router.get("/", getCategories);

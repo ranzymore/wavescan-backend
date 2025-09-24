@@ -66,6 +66,7 @@ model Category {
   updatedAt DateTime   @updatedAt
 
   @@unique([name, storeId])
+   @@unique([id, storeId], name: "id_storeId")
 }
 
 model Product {
@@ -82,5 +83,6 @@ model Product {
   updatedAt DateTime  @updatedAt
 
   @@unique([name, storeId])
+   @@unique([id, storeId], name: "id_storeId")
   @@index([createdAt])
 }
