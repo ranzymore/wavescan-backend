@@ -67,10 +67,10 @@ export const getCategories = async (req: Request, res: Response) => {
 // Get Single Category
 export const getCategory = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { categoryId } = req.params;
 
     const category = await prisma.category.findUnique({
-      where: { id },
+      where: { id: categoryId },
       include: { products: true },
     });
 
@@ -85,7 +85,7 @@ export const getCategory = async (req: Request, res: Response) => {
 // Update Category
 export const updateCategory = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { categoryId } = req.params;
 
     const parsed = categorySchema.partial().safeParse(req.body);
     if (!parsed.success) {
@@ -97,11 +97,11 @@ export const updateCategory = async (req: Request, res: Response) => {
     const { name, products } = parsed.data;
 
     const category = await prisma.category.update({
-      where: { id },
+      where: { id: categoryId },
       data: {
         name,
         products: products
-          ? { set: products.map((id) => ({ id })) } // replace relations
+          ? { set: products.map((id: string) => ({ id })) } // replace relations
           : undefined,
       },
       include: { products: true },
@@ -116,9 +116,9 @@ export const updateCategory = async (req: Request, res: Response) => {
 // Delete Category
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { categoryId } = req.params;
 
-    await prisma.category.delete({ where: { id } });
+    await prisma.category.delete({ where: { id: categoryId   } });
 
     res.json({ message: "Category deleted successfully" });
   } catch (err: any) {
